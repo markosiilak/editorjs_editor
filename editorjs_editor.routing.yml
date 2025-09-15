@@ -3,3 +3,15 @@ editorjs_editor.inline_save:
   defaults:
     _controller: '\Drupal\editorjs_editor\Controller\InlineEditController::save'
   methods: [POST]
+
+editorjs_editor.image_upload:
+  path: '/editorjs-image-upload'
+  defaults:
+    _controller: '\Drupal\editorjs_editor\Controller\ImageUploadController::uploadFile'
+  methods: [POST]
+
+editorjs_editor.image_url:
+  path: '/editorjs-image-url'
+  defaults:
+    _controller: '\Drupal\editorjs_editor\Controller\ImageUploadController::uploadUrl'
+  methods: [POST]

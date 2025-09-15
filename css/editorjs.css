@@ -81,3 +81,114 @@
   position: relative;
   z-index: 1000;
 }
+
+/* Image block styles */
+.editorjs-image-container {
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.editorjs-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.editorjs-image:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.editorjs-image--with-border {
+  border: 2px solid #e5e7eb;
+}
+
+.editorjs-image--with-background {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.editorjs-image--stretched {
+  width: 100%;
+}
+
+/* Container size variants - matching Drupal image styles */
+.editorjs-image-container--thumbnail {
+  max-width: 480px;
+  margin: 0.5rem auto;
+}
+
+.editorjs-image-container--medium {
+  max-width: 780px;
+  margin: 1rem auto;
+}
+
+.editorjs-image-container--large {
+  max-width: 1200px;
+  margin: 1.5rem auto;
+}
+
+/* Image size variants - ensure images display at their processed sizes */
+.editorjs-image--thumbnail {
+  width: 480px;
+  height: 480px;
+  object-fit: cover;
+}
+
+.editorjs-image--medium {
+  width: 780px;
+  height: 960px;
+  object-fit: cover;
+}
+
+.editorjs-image--large {
+  width: 1200px;
+  height: auto;
+  max-width: 100%;
+}
+
+.editorjs-image-caption {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-style: italic;
+  text-align: center;
+  line-height: 1.4;
+  padding: 0 0.5rem;
+  display: block;
+  font-weight: 400;
+}
+
+/* Responsive caption styling */
+@media (max-width: 768px) {
+  .editorjs-image-caption {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    padding: 0 0.25rem;
+  }
+}
+
+/* Content wrapper styles */
+.editorjs-content {
+  line-height: 1.6;
+}
+
+.editorjs-content .editorjs-paragraph {
+  margin: 0 0 1rem 0;
+}
+
+.editorjs-content .editorjs-header {
+  margin: 1.5rem 0 1rem 0;
+  font-weight: 600;
+}
+
+.editorjs-content .editorjs-list {
+  margin: 1rem 0;
+}
+
+.editorjs-content .editorjs-list-item {
+  margin: 0.25rem 0;
+}

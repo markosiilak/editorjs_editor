@@ -1,26 +1,6 @@
 /* eslint-disable no-undef */
-(function () {
+(function (Drupal, once, drupalSettings, $) {
   'use strict';
-  
-  // Wait for Drupal and dependencies to be available
-  function waitForDependencies() {
-    if (typeof window.Drupal === 'undefined' || 
-        typeof window.jQuery === 'undefined' || 
-        typeof window.once === 'undefined' || 
-        typeof window.drupalSettings === 'undefined') {
-      setTimeout(waitForDependencies, 100);
-      return;
-    }
-    
-    // Now that dependencies are available, initialize
-    initializeEditorJSInline();
-  }
-  
-  function initializeEditorJSInline() {
-    const Drupal = window.Drupal;
-    const $ = window.jQuery;
-    const once = window.once;
-    const drupalSettings = window.drupalSettings;
 
   const inlineInstances = new Map();
   const originalContent = new Map();
@@ -32,10 +12,77 @@
     const HeaderMod = await import('https://esm.sh/@editorjs/header@2');
     const ListMod = await import('https://esm.sh/@editorjs/list@1');
     const ParagraphMod = await import('https://esm.sh/@editorjs/paragraph@2');
+    const ImageMod = await import('https://esm.sh/@editorjs/image@2');
     const Header = HeaderMod.default || HeaderMod;
     const List = ListMod.default || ListMod;
     const Paragraph = ParagraphMod.default || ParagraphMod;
-    return { EditorJS, Header, List, Paragraph };
+    const Image = ImageMod.default || ImageMod;
+    return { EditorJS, Header, List, Paragraph, Image };
+  }
+
+  // Image upload functions
+  async function uploadImageFile(file) {
+    const formData = new FormData();
+    formData.append('image', file);
+    
+    try {
+      const response = await $.ajax({
+        url: '/editorjs-image-upload',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function(xhr) {
+          const token = drupalSettings.csrf_token_image_upload || '';
+          xhr.setRequestHeader('X-CSRF-Token', token);
+        }
+      });
+      
+      return {
+        success: 1,
+        file: {
+          url: response.url,
+          name: response.name || file.name,
+          size: response.size || file.size
+        }
+      };
+    } catch (error) {
+      console.error('Error uploading image file:', error);
+      return {
+        success: 0,
+        error: 'Failed to upload image'
+      };
+    }
+  }
+
+  async function uploadImageUrl(url) {
+    try {
+      const response = await $.ajax({
+        url: '/editorjs-image-url',
+        method: 'POST',
+        data: JSON.stringify({ url: url }),
+        contentType: 'application/json',
+        beforeSend: function(xhr) {
+          const token = drupalSettings.csrf_token_image_url || '';
+          xhr.setRequestHeader('X-CSRF-Token', token);
+        }
+      });
+      
+      return {
+        success: 1,
+        file: {
+          url: response.url,
+          name: response.name || 'Image',
+          size: response.size || 0
+        }
+      };
+    } catch (error) {
+      console.error('Error uploading image from URL:', error);
+      return {
+        success: 0,
+        error: 'Failed to upload image from URL'
+      };
+    }
   }
 
   function createInlineEditor(element, fieldData) {
@@ -162,7 +209,7 @@
 
     // Initialize EditorJS
     console.log('EditorJS Inline: Loading EditorJS libraries...');
-    loadEditorJS().then(({ EditorJS, Header, List, Paragraph }) => {
+    loadEditorJS().then(({ EditorJS, Header, List, Paragraph, Image }) => {
       console.log('EditorJS Inline: Libraries loaded, creating editor instance');
       let editorInstance;
       
@@ -195,6 +242,76 @@
           list: {
             class: List,
             inlineToolbar: true,
+          },
+          image: {
+            class: Image,
+            config: {
+              endpoints: {
+                byFile: '/editorjs-image-upload',
+                byUrl: '/editorjs-image-url',
+              },
+              field: 'image',
+              types: 'image/*',
+              captionPlaceholder: 'Caption',
+              buttonContent: 'Select an image',
+              uploader: {
+                uploadByFile: async (file) => {
+                  return await uploadImageFile(file);
+                },
+                uploadByUrl: async (url) => {
+                  return await uploadImageUrl(url);
+                }
+              },
+              // Add size configuration
+              sizes: {
+                thumbnail: 'Thumbnail (480x480)',
+                medium: 'Medium (780x960)',
+                large: 'Large (1200px)'
+              },
+              defaultSize: 'large',
+              // Add custom actions for size selection
+              actions: [
+                {
+                  name: 'size-thumbnail',
+                  icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" stroke="currentColor" stroke-width="1" fill="none"/><text x="8" y="10" text-anchor="middle" font-size="8" fill="currentColor">T</text></svg>',
+                  title: 'Thumbnail Size (480x480)',
+                  toggle: true,
+                  action: (name, api) => {
+                    const block = api.blocks.getBlockByIndex(api.blocks.getCurrentBlockIndex());
+                    if (block && block.data) {
+                      block.data.size = 'thumbnail';
+                      api.blocks.update(api.blocks.getCurrentBlockIndex(), block.data);
+                    }
+                  }
+                },
+                {
+                  name: 'size-medium',
+                  icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" stroke="currentColor" stroke-width="1" fill="none"/><text x="8" y="10" text-anchor="middle" font-size="8" fill="currentColor">M</text></svg>',
+                  title: 'Medium Size (780x960)',
+                  toggle: true,
+                  action: (name, api) => {
+                    const block = api.blocks.getBlockByIndex(api.blocks.getCurrentBlockIndex());
+                    if (block && block.data) {
+                      block.data.size = 'medium';
+                      api.blocks.update(api.blocks.getCurrentBlockIndex(), block.data);
+                    }
+                  }
+                },
+                {
+                  name: 'size-large',
+                  icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" stroke="currentColor" stroke-width="1" fill="none"/><text x="8" y="10" text-anchor="middle" font-size="8" fill="currentColor">L</text></svg>',
+                  title: 'Large Size (1200px)',
+                  toggle: true,
+                  action: (name, api) => {
+                    const block = api.blocks.getBlockByIndex(api.blocks.getCurrentBlockIndex());
+                    if (block && block.data) {
+                      block.data.size = 'large';
+                      api.blocks.update(api.blocks.getCurrentBlockIndex(), block.data);
+                    }
+                  }
+                }
+              ]
+            }
           },
         },
       });
@@ -319,13 +436,10 @@
     }, 3000);
   }
 
-  function initializeInlineEditing() {
-    // Add click handlers to EditorJS content
-    const editorjsElements = document.querySelectorAll('[data-editorjs-content="true"]');
-    
-    console.log('EditorJS Inline: Found', editorjsElements.length, 'editable elements');
-    
-    editorjsElements.forEach(element => {
+  function bindInlineEditing(context) {
+    const elements = once('editorjs-inline', '[data-editorjs-content="true"]', context);
+    console.log('EditorJS Inline: Attaching to', elements.length, 'elements');
+    elements.forEach(element => {
       element.addEventListener('click', (e) => {
         console.log('EditorJS Inline: Click detected on element');
         
@@ -382,13 +496,10 @@
     });
   }
 
-    // Initialize immediately since dependencies are now available
-    console.log('EditorJS Inline: Dependencies ready, initializing');
-    initializeInlineEditing();
-  }
-  
-  // Start waiting for dependencies
-  console.log('EditorJS Inline script loaded, waiting for Drupal...');
-  waitForDependencies();
+  Drupal.behaviors.editorjsInline = {
+    attach: function (context) {
+      bindInlineEditing(context);
+    }
+  };
 
-})();
+})(Drupal, once, drupalSettings, jQuery);

@@ -105,7 +105,7 @@ function editorjs_editor_entity_view_alter(array &$build, \Drupal\Core\Entity\En
         '#editorjs_entity_id' => $entity->id(),
         '#editorjs_entity_type' => $entity->getEntityTypeId(),
         '#attached' => [
-          'library' => ['editorjs_editor/inline'],
+          'library' => ['editorjs_editor/editorjs.inline'],
         ],
       ];
 
@@ -172,7 +172,7 @@ function editorjs_editor_entity_view_alter(array &$build, \Drupal\Core\Entity\En
         '#editorjs_entity_id' => $entity->id(),
         '#editorjs_entity_type' => $entity->getEntityTypeId(),
         '#attached' => [
-          'library' => ['editorjs_editor/inline'],
+          'library' => ['editorjs_editor/editorjs.inline'],
         ],
       ];
       BubbleableMetadata::createFromRenderArray($element)->applyTo($element);
@@ -413,11 +413,18 @@ function editorjs_editor_preprocess_field(&$variables) {
       continue;
     }
     
-    // Replace the item content
+    // Replace the item content and add inline data attributes so Twig wrapper can read them
     $variables['items'][$delta]['content'] = [
       '#type' => 'inline_template',
       '#template' => '{{ html|raw }}',
       '#context' => ['html' => $html],
+      '#editorjs_data' => json_encode($decoded),
+      '#editorjs_field_id' => $field_name,
+      '#editorjs_entity_id' => $variables['element']['#object']->id() ?? NULL,
+      '#editorjs_entity_type' => $variables['element']['#object']->getEntityTypeId() ?? NULL,
+      '#attached' => [
+        'library' => ['editorjs_editor/editorjs.inline'],
+      ],
     ];
     
     $processed = TRUE;
@@ -435,7 +442,10 @@ function editorjs_editor_preprocess_field(&$variables) {
  * Implements hook_page_attachments_alter().
  */
 function editorjs_editor_page_attachments_alter(array &$attachments) {
-  // Add CSRF token for inline editing
-  $attachments['#attached']['drupalSettings']['csrf_token'] = \Drupal::service('csrf_token')->get('editorjs-inline-save');
+  // Add CSRF tokens for inline editing and image uploads
+  $csrf_token_service = \Drupal::service('csrf_token');
+  $attachments['#attached']['drupalSettings']['csrf_token'] = $csrf_token_service->get('editorjs-inline-save');
+  $attachments['#attached']['drupalSettings']['csrf_token_image_upload'] = $csrf_token_service->get('editorjs-image-upload');
+  $attachments['#attached']['drupalSettings']['csrf_token_image_url'] = $csrf_token_service->get('editorjs-image-url');
 }
 

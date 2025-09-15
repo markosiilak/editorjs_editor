@@ -128,6 +128,43 @@ class EditorJsRenderer {
       case 'delimiter':
         return '<hr />';
 
+      case 'image':
+        $url = $data['file']['url'] ?? '';
+        $caption = $this->sanitizeInlineHtml($data['caption'] ?? '');
+        $withBorder = $data['withBorder'] ?? false;
+        $withBackground = $data['withBackground'] ?? false;
+        $stretched = $data['stretched'] ?? false;
+        $size = $data['size'] ?? 'large'; // Default to medium, support: thumbnail, medium, large
+        
+        if ($url === '') {
+          return '';
+        }
+        
+        // Convert EditorJS image URL to Drupal image style URL
+        $styled_url = $this->getImageStyleUrl($url, $size);
+        
+        $classes = ['editorjs-image'];
+        if ($withBorder) {
+          $classes[] = 'editorjs-image--with-border';
+        }
+        if ($withBackground) {
+          $classes[] = 'editorjs-image--with-background';
+        }
+        if ($stretched) {
+          $classes[] = 'editorjs-image--stretched';
+        }
+        // Add size class for styling
+        $classes[] = 'editorjs-image--' . $size;
+        
+        $classAttr = 'class="' . implode(' ', $classes) . '"';
+        $imgTag = '<img src="' . htmlspecialchars($styled_url, ENT_QUOTES, 'UTF-8') . '" alt="' . htmlspecialchars($caption, ENT_QUOTES, 'UTF-8') . '" ' . $classAttr . ' />';
+        
+        if ($caption !== '') {
+          return '<figure class="editorjs-image-container editorjs-image-container--' . $size . '">' . $imgTag . '<figcaption class="editorjs-image-caption">' . $caption . '</figcaption></figure>';
+        }
+        
+        return '<div class="editorjs-image-container editorjs-image-container--' . $size . '">' . $imgTag . '</div>';
+
       default:
         // Fallback: preformatted JSON for unknown blocks (developer-friendly).
         $safe = htmlspecialchars(json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), ENT_QUOTES, 'UTF-8');
@@ -142,6 +179,59 @@ class EditorJsRenderer {
       'span', 'br'
     ];
     return Xss::filter($html, $allowedTags);
+  }
+
+  /**
+   * Convert EditorJS image URL to Drupal image style URL.
+   *
+   * @param string $url
+   *   The original image URL.
+   * @param string $style_name
+   *   The Drupal image style name.
+   *
+   * @return string
+   *   The styled image URL.
+   */
+  private function getImageStyleUrl(string $url, string $style_name): string {
+    // Map EditorJS sizes to Drupal image styles
+    $style_mapping = [
+      'thumbnail' => 'thumbnail',
+      'medium' => 'medium', 
+      'large' => 'large',
+    ];
+
+    $drupal_style = $style_mapping[$style_name] ?? 'large';
+
+    // Extract file path from URL
+    $parsed_url = parse_url($url);
+    if (!$parsed_url || !isset($parsed_url['path'])) {
+      return $url; // Return original if we can't parse
+    }
+
+    $file_path = $parsed_url['path'];
+    
+    // Remove leading slash and sites/default/files/ if present
+    $file_path = ltrim($file_path, '/');
+    if (strpos($file_path, 'sites/default/files/') === 0) {
+      $file_path = substr($file_path, 20); // Remove 'sites/default/files/'
+    }
+
+    // Use Drupal's image style service directly with file URI
+    $file_uri = 'public://' . $file_path;
+    $image_style = \Drupal::entityTypeManager()->getStorage('image_style')->load($drupal_style);
+    
+    if ($image_style) {
+      try {
+        $styled_url = $image_style->buildUrl($file_uri);
+        return $styled_url;
+      } catch (\Exception $e) {
+        // If image style generation fails, fall back to manual URL generation
+      }
+    }
+
+    // Fallback: Generate Drupal image style URL manually
+    $base_url = \Drupal::request()->getSchemeAndHttpHost();
+    return $base_url . '/sites/default/files/styles/' . $drupal_style . '/public/' . $file_path;
   }
 }
 
