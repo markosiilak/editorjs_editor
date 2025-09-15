@@ -269,48 +269,6 @@
                 large: 'Large (1200px)'
               },
               defaultSize: 'large',
-              // Add custom actions for size selection
-              actions: [
-                {
-                  name: 'size-thumbnail',
-                  icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" stroke="currentColor" stroke-width="1" fill="none"/><text x="8" y="10" text-anchor="middle" font-size="8" fill="currentColor">T</text></svg>',
-                  title: 'Thumbnail Size (480x480)',
-                  toggle: true,
-                  action: (name, api) => {
-                    const block = api.blocks.getBlockByIndex(api.blocks.getCurrentBlockIndex());
-                    if (block && block.data) {
-                      block.data.size = 'thumbnail';
-                      api.blocks.update(api.blocks.getCurrentBlockIndex(), block.data);
-                    }
-                  }
-                },
-                {
-                  name: 'size-medium',
-                  icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" stroke="currentColor" stroke-width="1" fill="none"/><text x="8" y="10" text-anchor="middle" font-size="8" fill="currentColor">M</text></svg>',
-                  title: 'Medium Size (780x960)',
-                  toggle: true,
-                  action: (name, api) => {
-                    const block = api.blocks.getBlockByIndex(api.blocks.getCurrentBlockIndex());
-                    if (block && block.data) {
-                      block.data.size = 'medium';
-                      api.blocks.update(api.blocks.getCurrentBlockIndex(), block.data);
-                    }
-                  }
-                },
-                {
-                  name: 'size-large',
-                  icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="2" width="12" height="12" stroke="currentColor" stroke-width="1" fill="none"/><text x="8" y="10" text-anchor="middle" font-size="8" fill="currentColor">L</text></svg>',
-                  title: 'Large Size (1200px)',
-                  toggle: true,
-                  action: (name, api) => {
-                    const block = api.blocks.getBlockByIndex(api.blocks.getCurrentBlockIndex());
-                    if (block && block.data) {
-                      block.data.size = 'large';
-                      api.blocks.update(api.blocks.getCurrentBlockIndex(), block.data);
-                    }
-                  }
-                }
-              ]
             }
           },
         },
