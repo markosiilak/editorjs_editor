@@ -1,8 +1,10 @@
-name: 'Editor.js Editor'
+name: 'EditorJS Editor'
 type: module
-description: 'Provides Editor.js text editor integration.'
-core_version_requirement: '^11'
-package: 'Custom'
+description: 'Provides EditorJS text editor integration with inline editing capabilities for rich text content.'
+core_version_requirement: '^10 || ^11'
+package: 'Text Editors'
+version: '1.0.0'
 dependencies:
   - 'drupal:editor'
   - 'drupal:filter'
+configure: 'entity.text_format.collection'

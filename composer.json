@@ -11,10 +11,10 @@
         "inline-editing",
         "rich-text"
     ],
-    "homepage": "https://github.com/markosiilak/editorjs_editor",
+    "homepage": "https://www.drupal.org/project/editorjs_editor",
     "support": {
-        "issues": "https://github.com/markosiilak/editorjs_editor/issues",
-        "source": "https://github.com/markosiilak/editorjs_editor"
+        "issues": "https://www.drupal.org/project/issues/editorjs_editor",
+        "source": "https://git.drupalcode.org/project/editorjs_editor"
     },
     "authors": [
         {
