@@ -1,0 +1,83 @@
+.editorjs-wrapper { margin-top: 0.25rem; }
+.editorjs-holder { min-height: 12rem; padding: 0.75rem; }
+.editorjs-holder:focus { outline: 2px solid rgba(59,130,246,0.6); outline-offset: 0; }
+/* Typical content spacing */
+.editorjs-holder p { margin: 0 0 0.75em; width: 100%; }
+.editorjs-holder ul { list-style: disc; padding-left: 1.5em; }
+.editorjs-holder ol { list-style: decimal; padding-left: 1.5em; }
+.editorjs-holder blockquote { border-left: 3px solid #e5e7eb; margin: 0.75em 0; padding: 0.25em 0 0.25em 0.75em; color: #6b7280; }
+
+/* Inline editing styles */
+[data-editorjs-content="true"] {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+[data-editorjs-content="true"]:hover {
+  background-color: rgba(59, 130, 246, 0.02);
+  border-radius: 4px;
+}
+
+[data-editorjs-content="true"]:hover::after {
+  content: "Click to edit";
+  position: absolute;
+  top: -25px;
+  right: 0;
+  background: #374151;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.editorjs-inline-container {
+  position: relative;
+  z-index: 1000;
+}
+
+.editorjs-inline-toolbar {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.editorjs-inline-toolbar button {
+  transition: all 0.2s ease;
+}
+
+.editorjs-inline-toolbar button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.editorjs-inline-holder {
+  background: white;
+  border: 1px solid #d1d5db;
+  transition: border-color 0.2s ease;
+}
+
+.editorjs-inline-holder:focus-within {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Overlay styles for better UX */
+.editorjs-inline-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  pointer-events: none;
+}
+
+.editorjs-inline-container {
+  position: relative;
+  z-index: 1000;
+}

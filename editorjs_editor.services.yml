@@ -1,0 +1,11 @@
+services:
+  editorjs_editor.renderer:
+    class: Drupal\editorjs_editor\Service\EditorJsRenderer
+
+  editorjs_editor.twig_extension:
+    class: Drupal\editorjs_editor\Twig\EditorJsExtension
+    arguments: ['@editorjs_editor.renderer']
+    tags:
+      - { name: twig.extension }
+
+

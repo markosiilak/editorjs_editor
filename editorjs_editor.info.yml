@@ -1,0 +1,8 @@
+name: 'Editor.js Editor'
+type: module
+description: 'Provides Editor.js text editor integration.'
+core_version_requirement: '^11'
+package: 'Custom'
+dependencies:
+  - 'drupal:editor'
+  - 'drupal:filter'

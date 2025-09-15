@@ -1,0 +1,52 @@
+{
+    "name": "drupal/editorjs_editor",
+    "description": "EditorJS integration for Drupal with inline editing capabilities",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "keywords": [
+        "drupal",
+        "editorjs",
+        "editor",
+        "wysiwyg",
+        "inline-editing",
+        "rich-text"
+    ],
+    "homepage": "https://github.com/markosiilak/editorjs_editor",
+    "support": {
+        "issues": "https://github.com/markosiilak/editorjs_editor/issues",
+        "source": "https://github.com/markosiilak/editorjs_editor"
+    },
+    "authors": [
+        {
+            "name": "Marko Siilak",
+            "email": "marko@siilak.com",
+            "homepage": "https://github.com/markosiilak",
+            "role": "Maintainer"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "drupal/core": "^10.0 || ^11.0"
+    },
+    "require-dev": {
+        "drupal/coder": "^8.3",
+        "phpunit/phpunit": "^9.5"
+    },
+    "suggest": {
+        "drupal/gin": "Recommended admin theme for better EditorJS integration"
+    },
+    "extra": {
+        "drupal": {
+            "version": "1.0.0",
+            "datestamp": "1734567890"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "phpcs": "phpcs --standard=Drupal --extensions=php,module,inc,install,test,profile,theme,css,info,txt,md,yml,yaml web/modules/custom/editorjs_editor/",
+        "phpcbf": "phpcbf --standard=Drupal --extensions=php,module,inc,install,test,profile,theme,css,info,txt,md,yml,yaml web/modules/custom/editorjs_editor/"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

@@ -1,0 +1,7 @@
+editorjs_editor.settings:
+  type: mapping
+  label: 'Editor.js settings'
+
+editor.settings.editorjs:
+  type: editorjs_editor.settings
+  label: 'Editor.js settings'

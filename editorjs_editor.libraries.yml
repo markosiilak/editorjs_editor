@@ -1,0 +1,26 @@
+editorjs.editor:
+  version: 1.x
+  js:
+    js/editorjs.js: {}
+  css:
+    theme:
+      css/editorjs.css: {}
+  dependencies:
+    - core/drupal
+    - core/drupal.debounce
+    - core/jquery
+    - core/once
+    - core/drupalSettings
+
+editorjs.inline:
+  version: 1.x
+  js:
+    js/editorjs-inline.js: {}
+  css:
+    theme:
+      css/editorjs.css: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/once
+    - core/drupalSettings

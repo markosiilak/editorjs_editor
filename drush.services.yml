@@ -1,0 +1,7 @@
+services:
+  editorjs_editor.commands:
+    class: Drupal\editorjs_editor\Commands\EditorjsEditorCommands
+    tags:
+      - { name: drush.command }
+
+

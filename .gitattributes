@@ -1,0 +1,29 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# PHP files
+*.php text diff=php
+
+# JavaScript files
+*.js text diff=javascript
+
+# CSS files
+*.css text diff=css
+
+# YAML files
+*.yml text diff=yaml
+*.yaml text diff=yaml
+
+# Markdown files
+*.md text diff=markdown
+
+# Twig files
+*.twig text diff=twig
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary

@@ -1,0 +1,5 @@
+editorjs_editor.inline_save:
+  path: '/editorjs-inline-save'
+  defaults:
+    _controller: '\Drupal\editorjs_editor\Controller\InlineEditController::save'
+  methods: [POST]
