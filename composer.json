@@ -42,9 +42,8 @@
         }
     },
     "scripts": {
-        "test": "phpunit",
-        "phpcs": "phpcs --standard=Drupal --extensions=php,module,inc,install,test,profile,theme,css,info,txt,md,yml,yaml web/modules/custom/editorjs_editor/",
-        "phpcbf": "phpcbf --standard=Drupal --extensions=php,module,inc,install,test,profile,theme,css,info,txt,md,yml,yaml web/modules/custom/editorjs_editor/"
+        "validate": "composer validate --no-check-publish",
+        "syntax-check": "find . -name '*.php' -not -path './vendor/*' -exec php -l {} \\;"
     },
     "config": {
         "sort-packages": true

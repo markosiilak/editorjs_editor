@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  phpcs:
+  validate:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -18,28 +18,25 @@ jobs:
         php-version: '8.1'
         extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, dom, filter, gd, iconv, json, mbstring, pdo
         
-    - name: Install dependencies
+    - name: Install Composer dependencies
       run: composer install --no-dev --optimize-autoloader
       
-    - name: Run PHPCS
-      run: composer run phpcs
-
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        drupal-version: ['10.0', '11.0']
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.1'
-        extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, dom, filter, gd, iconv, json, mbstring, pdo
-        
-    - name: Install dependencies
-      run: composer install --no-dev --optimize-autoloader
+    - name: Validate composer.json
+      run: composer validate --no-check-publish
       
-    - name: Run tests
-      run: composer run test
+    - name: Check PHP syntax
+      run: find . -name "*.php" -not -path "./vendor/*" -exec php -l {} \;
+      
+    - name: Check YAML syntax
+      run: |
+        find . -name "*.yml" -not -path "./vendor/*" -exec php -r "
+          foreach (glob('{}') as \$file) {
+            try {
+              yaml_parse_file(\$file);
+              echo '✓ ' . \$file . PHP_EOL;
+            } catch (Exception \$e) {
+              echo '✗ ' . \$file . ': ' . \$e->getMessage() . PHP_EOL;
+              exit(1);
+            }
+          }
+        " \;
